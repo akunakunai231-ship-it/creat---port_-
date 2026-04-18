@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dzakki, CDE — Creative Portfolio | Rumah Kepemimpinan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-light: #eff6ff;
+  --purple: #7c3aed;
+  --teal: #0d9488;
+  --amber: #d97706;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --bg: #ffffff;
+  --bg-secondary: #f8fafc;
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #fff;
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 2.5rem; height: 60px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.nav.scrolled { border-color: var(--border); box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+.nav-brand { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--text-primary); letter-spacing: -0.02em; }
+.nav-brand span { color: var(--blue); }
+.nav-links { display: flex; gap: 1.75rem; list-style: none; }
+.nav-links a { font-size: 13px; color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+.nav-links a:hover { color: var(--blue); }
+
+/* HERO */
+#hero-cover {
+  position: relative; width: 100%; height: 100vh; min-height: 100svh;
+  background: #fff; display: flex; flex-direction: column;
+  align-items: stretch; overflow: hidden;
+}
+#ai-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+#hero-inner {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 80px 2.5rem 60px;
+  gap: 2.5rem;
+  max-width: 1100px; margin: 0 auto; width: 100%;
+}
+#hero-content {
+  flex: 1; min-width: 0;
+}
+#hero-photo-wrap {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; animation: heroUp 0.7s ease 0.8s forwards;
+}
+#hero-photo-frame {
+  position: relative;
+  width: 240px; height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1.5px solid rgba(37,99,235,0.25);
+  box-shadow: 0 0 40px rgba(37,99,235,0.1), 0 0 0 1px rgba(37,99,235,0.08);
+  background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+}
+#hero-img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block;
+}
+#hph {
+  display: none; width: 100%; height: 100%;
+  align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+  font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800;
+  color: var(--blue); letter-spacing: -0.02em;
+}
+#scan-line {
+  position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(37,99,235,0.8), rgba(124,58,237,0.6), transparent);
+  animation: scanMove 2.4s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(37,99,235,0.6);
+  z-index: 3;
+}
+@keyframes scanMove {
+  0%   { top: 0; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+#scan-overlay {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(37,99,235,0.03) 3px, rgba(37,99,235,0.03) 4px
+  );
+}
+
+/* hero text animations */
+.chip-hero {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; background: var(--blue); color: #fff;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 1.5rem; letter-spacing: 0.02em;
+  opacity: 0; animation: heroUp 0.7s ease 0.1s forwards;
+}
+#hero-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(34px, 5vw, 60px); font-weight: 800;
+  color: var(--text-primary); line-height: 1.05; margin-bottom: 0.3rem; letter-spacing: -0.03em;
+  opacity: 0; animation: heroUp 0.7s ease 0.25s forwards;
+}
+#hero-name .cde-s { color: var(--blue); }
+#hero-cert {
+  font-size: 12px; color: var(--text-tertiary); margin-bottom: 0.75rem;
+  opacity: 0; animation: heroUp 0.7s ease 0.38s forwards;
+}
+#hero-role {
+  font-family: 'Syne', sans-serif; font-size: clamp(13px, 1.8vw, 17px); font-weight: 600;
+  background: linear-gradient(90deg, var(--blue), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1rem;
+  opacity: 0; animation: heroUp 0.7s ease 0.48s forwards;
+}
+#hero-bio {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.75; max-width: 480px; margin-bottom: 1rem;
+  opacity: 0; animation: heroUp 0.7s ease 0.58s forwards;
+}
+#hero-meta {
+  font-size: 12px; color: var(--text-tertiary);
+  opacity: 0; animation: heroUp 0.7s ease 0.68s forwards;
+}
+
+/* SCROLL HINT */
+#scroll-hint {
+  position: absolute; bottom: 1.5rem; left: 0; right: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; z-index: 3;
+  opacity: 0; animation: fadeIn 0.7s ease 1.2s forwards;
+}
+#scroll-hint span {
+  font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.07em; white-space: nowrap;
+}
+.scroll-arr {
+  width: 16px; height: 16px;
+  border-right: 2px solid var(--text-tertiary); border-bottom: 2px solid var(--text-tertiary);
+  transform: rotate(45deg);
+  animation: arrBounce 1.4s ease-in-out infinite;
+}
+@keyframes heroUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes arrBounce {
+  0%,100% { transform: rotate(45deg) translate(0,0); }
+  50%      { transform: rotate(45deg) translate(4px,4px); }
+}
+
+/* MOBILE HERO */
+@media (max-width: 768px) {
+  #hero-inner {
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    padding: 70px 1.5rem 55px;
+    gap: 1.25rem;
+    overflow-y: auto;
+  }
+  #hero-photo-frame {
+    width: 120px; height: 150px;
+    border-radius: 12px;
+  }
+  #hero-name { font-size: clamp(28px, 8vw, 38px); }
+  #hero-bio  { font-size: 13px; }
+  .chip-hero { font-size: 10px; margin-bottom: 0.75rem; }
+}
+
+/* PAGE */
+.page { margin-top: 0; }
+.section {
+  padding: 4rem 2.5rem; border-bottom: 1px solid var(--border);
+  max-width: 860px; margin: 0 auto;
+}
+.section:last-child { border-bottom: none; }
+
+/* SECTION HEADER */
+.sec-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
+.sec-acc { width: 4px; height: 22px; border-radius: 2px; flex-shrink: 0; }
+.a-blue   { background: linear-gradient(180deg, var(--blue), var(--purple)); }
+.a-purple { background: linear-gradient(180deg, var(--purple), var(--teal)); }
+.a-teal   { background: linear-gradient(180deg, var(--teal), var(--blue)); }
+.a-amber  { background: linear-gradient(180deg, var(--amber), var(--teal)); }
+.sec-lbl { font-size: 11px; font-weight: 500; letter-spacing: 0.09em; color: var(--text-tertiary); text-transform: uppercase; }
+.sec-ttl { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+.sec-dsc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.75rem; }
+
+/* CDE BOX */
+.cde-box {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d;
+  border-radius: var(--radius-lg); padding: 1.125rem 1.25rem; margin-bottom: 1.25rem;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.cde-bdg { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: #92400e; white-space: nowrap; padding-top: 1px; }
+.cde-lbl { font-size: 13px; font-weight: 500; color: #92400e; margin-bottom: 3px; }
+.cde-dsc { font-size: 12px; color: #78350f; line-height: 1.55; }
+
+/* CARDS */
+.card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(37,99,235,0.09); }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 1rem; }
+.ct { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+.cs { font-size: 12px; color: var(--blue); margin-bottom: 4px; }
+.cb { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-top: 6px; }
+
+/* TAGS */
+.tag { display: inline-block; font-size: 11px; border: 1px solid var(--blue); color: var(--blue); padding: 3px 10px; border-radius: 20px; margin: 3px; transition: background 0.15s; cursor: default; }
+.tag:hover { background: var(--blue-light); }
+.tg  { display: inline-block; font-size: 11px; border: 1px solid var(--border-hover); color: var(--text-secondary); padding: 3px 10px; border-radius: 20px; margin: 3px; }
+.tc  { display: inline-block; font-size: 10px; padding: 2px 9px; border-radius: 10px; margin-bottom: 7px; font-weight: 500; }
+.tcb { background: #dbeafe; color: #1e40af; }
+.tcp { background: #ede9fe; color: #5b21b6; }
+.tct { background: #ccfbf1; color: #134e4a; }
+
+/* CHIP */
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; background: var(--blue); color: #fff; padding: 5px 14px; border-radius: 20px; letter-spacing: 0.02em; }
+
+/* JOURNEY */
+.jcard { border-radius: var(--radius-lg); padding: 1.25rem; margin-top: 0.875rem; border: 1px solid var(--border); background: var(--bg-secondary); }
+.jcard.jb { border-left: 3px solid var(--blue); }
+.jcard.jp { border-left: 3px solid var(--purple); }
+.jcard.jt { border-left: 3px solid var(--teal); }
+.jlbl { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 7px; }
+.jtxt { font-size: 14px; color: var(--text-primary); line-height: 1.65; }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem; }
+.tli { display: flex; gap: 1rem; align-items: flex-start; }
+.tld  { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 0 3px #dbeafe; }
+.tldg { width: 10px; height: 10px; border-radius: 50%; background: var(--border-hover); margin-top: 5px; flex-shrink: 0; }
+
+/* BADGES */
+.bn { display: inline-block; font-size: 10px; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; font-weight: 500; }
+.bc { display: inline-block; font-size: 10px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; font-weight: 500; }
+
+/* DIVIDER */
+.dvlbl { font-size: 11px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin: 2rem 0 0.875rem; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+
+/* SPEAKER */
+.spkr { background: linear-gradient(135deg,#eff6ff,#f5f3ff); border-radius: var(--radius-lg); padding: 1.25rem; border-left: 3px solid var(--blue); margin-top: 0.875rem; transition: box-shadow 0.2s; }
+.spkr:hover { box-shadow: 0 4px 16px rgba(37,99,235,0.1); }
+
+/* PAPER */
+.paper { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 6px; transition: border-color 0.2s, box-shadow 0.2s; }
+.paper:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(37,99,235,0.08); }
+.pt { font-size: 13px; font-weight: 500; color: var(--text-primary); line-height: 1.5; }
+.pj { font-size: 12px; color: var(--blue); }
+.pd { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+.pl { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--blue); text-decoration: none; margin-top: 4px; border: 1px solid var(--border); padding: 4px 10px; border-radius: var(--radius-md); width: fit-content; transition: background 0.15s, border-color 0.15s; }
+.pl:hover { background: var(--blue-light); border-color: var(--blue); }
+
+/* IMPACT */
+.ic { border-radius: var(--radius-lg); padding: 1.25rem; transition: transform 0.2s, box-shadow 0.2s; }
+.ic:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.09); }
+.ic1 { background: linear-gradient(135deg,#eff6ff,#dbeafe); border: 1px solid #bfdbfe; }
+.ic2 { background: linear-gradient(135deg,#f0fdfa,#ccfbf1); border: 1px solid #99f6e4; }
+.ic3 { background: linear-gradient(135deg,#f5f3ff,#ede9fe); border: 1px solid #ddd6fe; }
+.ic4 { background: linear-gradient(135deg,#fffbeb,#fef3c7); border: 1px solid #fde68a; }
+
+/* COMP */
+.cc { border-radius: var(--radius-lg); padding: 1.25rem; transition: transform 0.2s, box-shadow 0.2s; }
+.cc:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.09); }
+.cc1 { background: linear-gradient(135deg,#eff6ff,#dbeafe); border: 1px solid #bfdbfe; }
+.cc2 { background: linear-gradient(135deg,#f5f3ff,#ede9fe); border: 1px solid #ddd6fe; }
+.cc3 { background: linear-gradient(135deg,#f0fdfa,#ccfbf1); border: 1px solid #99f6e4; }
+.cc4 { background: linear-gradient(135deg,#fffbeb,#fef3c7); border: 1px solid #fde68a; }
+
+/* FADE IN */
+.fi { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.fi.vis { opacity: 1; transform: translateY(0); }
+
+/* EXPERIENCE TABS */
+.exp-tabs {
+  display: flex; gap: 8px; margin-top: 1.5rem; margin-bottom: 0;
+  background: var(--bg-secondary); padding: 5px; border-radius: var(--radius-lg);
+  width: fit-content;
+}
+.exp-btn {
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  padding: 8px 20px; border-radius: 10px; border: none; cursor: pointer;
+  background: transparent; color: var(--text-secondary);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.exp-btn.active {
+  background: #fff; color: var(--blue);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+}
+.exp-btn:hover:not(.active) { color: var(--text-primary); }
+.exp-panel { margin-top: 0; }
+
+/* RESPONSIVE tabs */
+@media (max-width: 480px) {
+  .exp-tabs { width: 100%; }
+  .exp-btn { flex: 1; text-align: center; font-size: 12px; padding: 8px 10px; }
+}
+
+
+@media (max-width: 640px) {
+  .nav { padding: 0 1.25rem; }
+  .nav-links { display: none; }
+  .section { padding: 3rem 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <span class="nav-brand">Dzakki, <span>CDE</span> — Creative Portfolio</span>
+  <ul class="nav-links">
+    <li><a onclick="go('identity')">Identity</a></li>
+    <li><a onclick="go('journey')">Journey</a></li>
+    <li><a onclick="go('leadership')">Leadership</a></li>
+    <li><a onclick="go('impact')">Impact</a></li>
+    <li><a onclick="go('competencies')">Kompetensi</a></li>
+    <li><a onclick="go('commitment')">Komitmen</a></li>
+  </ul>
+</nav>
+
+<div id="hero-cover">
+  <canvas id="ai-canvas"></canvas>
+  <div id="hero-inner">
+    <div id="hero-content">
+      <div class="chip-hero">✦ Creative Portfolio — Rumah Kepemimpinan</div>
+      <h1 id="hero-name">Dzakki, <span class="cde-s">CDE</span></h1>
+      <p id="hero-cert">Certified Digital Entrepreneur · Sandination Academy × Rocket Acceleration, Jul 2025</p>
+      <p id="hero-role">Business Statistics Student &amp; Marketing Data Analyst</p>
+      <p id="hero-bio">Mahasiswa akhir S1 Statistika Bisnis Institut Teknologi Sepuluh Nopember (ITS), angkatan 2022. Berpengalaman dalam marketing data analytics, business performance analysis, dan pengembangan platform digital untuk industri dan komunitas.</p>
+      <p id="hero-meta">ITS Surabaya &nbsp;·&nbsp; Statistika Bisnis &nbsp;·&nbsp; hello.dzak123@gmail.com &nbsp;·&nbsp; dzakjournal.com &nbsp;·&nbsp; linkedin.com/in/dzakkidamar</p>
+    </div>
+    <div id="hero-photo-wrap">
+      <div id="hero-photo-frame">
+        <img id="hero-img" src="https://dzakjournal.com/assets/dzakki-photo.jpg" onerror="this.style.display='none';document.getElementById('hph').style.display='flex'" alt="Dzakki">
+        <div id="hph"><span>DZ</span></div>
+        <div id="scan-line"></div>
+        <div id="scan-overlay"></div>
+      </div>
+    </div>
+  </div>
+  <div id="scroll-hint">
+    <span>Scroll untuk lanjut</span>
+    <div class="scroll-arr"></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="section" id="identity">
+    <div class="cde-box fi">
+      <div class="cde-bdg">CDE</div>
+      <div>
+        <p class="cde-lbl">Certified Digital Entrepreneur</p>
+        <p class="cde-dsc">Professional certification from Sandination Academy and Rocket Acceleration — awarded to individuals who have demonstrated the highest level of competency and skill in digital entrepreneurship. Earned under the name Upgrade UMKM · Jan–Jul 2025, Jakarta.</p>
+      </div>
+    </div>
+    <div class="card-grid fi">
+      <div class="card">
+        <p class="ct">Areas of Contribution</p>
+        <div style="margin-top:8px">
+          <span class="tag">Data Analytics</span>
+          <span class="tag">Marketing Analytics</span>
+          <span class="tag">Startup &amp; MSME</span>
+          <span class="tag">Web Development</span>
+          <span class="tag">Statistical Research</span>
+          <span class="tag">Social Leadership</span>
+        </div>
+      </div>
+      <div class="card">
+        <p class="ct">Scholarship Awardee</p>
+        <p class="cb" style="margin-top:10px">A driver of social impact through collaboration in technology, data, and entrepreneurship for a better Indonesia.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="journey">
+    <div class="sec-hdr fi"><div class="sec-acc a-blue"></div><span class="sec-lbl">Transformational Journey</span></div>
+    <h2 class="sec-ttl fi">How I grew</h2>
+    <p class="sec-dsc fi">The journey and experiences that became turning points in the way I think, lead, and contribute.</p>
+    <div class="jcard jb fi">
+      <p class="jlbl">Where it all started</p>
+      <p class="jtxt">I started out as a fairly active statistics student — with several technical projects, organizational roles, and internship experiences under my belt. But I was still working with an output-oriented mindset, not an impact-oriented one. I hadn't truly understood what it means to lead with clear values and vision.</p>
+    </div>
+    <div class="jcard jp fi">
+      <p class="jlbl">Key shifts in thinking &amp; action</p>
+      <p class="jtxt">I learned that leadership isn't about titles or achievements you can put on a CV — it's about consistency of values and the courage to serve. I began learning to build teams not just to complete tasks, but to grow together and create lasting impact.</p>
+    </div>
+    <div class="jcard jt fi">
+      <p class="jlbl">Values &amp; principles that shaped me most</p>
+      <p class="jtxt">Integrity in work, data-driven and empathetic leadership, and a commitment to continuous learning and giving. The principle of "impact before credit" guides me in every project and collaboration — that the best contributions don't need to be seen to remain meaningful.</p>
+    </div>
+  </div>
+
+  <div class="section" id="leadership">
+    <div class="sec-hdr fi"><div class="sec-acc a-purple"></div><span class="sec-lbl">Experience</span></div>
+    <h2 class="sec-ttl fi">Experience</h2>
+    <p class="sec-dsc fi">Key roles demonstrating real learning and contribution across professional and organizational settings.</p>
+
+    <!-- TAB BUTTONS -->
+    <div class="exp-tabs fi">
+      <button class="exp-btn active" onclick="switchTab('work', this)">Work Experience</button>
+      <button class="exp-btn" onclick="switchTab('org', this)">Organizational Experience</button>
+    </div>
+
+    <!-- WORK EXPERIENCE TAB -->
+    <div id="tab-work" class="exp-panel">
+      <div class="timeline" style="margin-top:1.25rem">
+        <div class="tli fi"><div class="tld"></div><div style="flex:1">
+          <p class="ct">Marketing Data Analyst Intern <span class="bn">Latest</span></p>
+          <p class="cs">PT Tiga Berlian Mandiri (Tiberman) · Feb 2026 – Present</p>
+          <p class="cb">Built a centralized customer data dashboard in Google Sheets for real-time visibility of customer information across multiple branches. Automated data processing workflows and designed dynamic filters to support marketing and operations teams.</p>
+        </div></div>
+        <div class="tli fi"><div class="tld"></div><div style="flex:1">
+          <p class="ct">Data Analyst Intern — Inventory &amp; Demand Forecasting</p>
+          <p class="cs">PT Bakrie Pipe Industries · Jan – Feb 2025 · Bekasi</p>
+          <p class="cb">Developed a Smart Inventory dashboard to monitor demand trends, stock levels, and reorder points (ROP). Performed end-to-end data preparation for accurate analytical outputs.</p>
+        </div></div>
+        <div class="tli fi"><div class="tld"></div><div style="flex:1">
+          <p class="ct">Project Lead — MSME Digitalization <span class="bc">CDE</span></p>
+          <p class="cs">PT Digital Nusantara Innovations · May 2024 – Present · Surabaya</p>
+          <p class="cb">Led a campus-based project team supporting MSME digitalization initiatives. This project served as the foundation for earning the CDE certification from Sandination Academy.</p>
+        </div></div>
+        <div class="tli fi"><div class="tld"></div><div style="flex:1">
+          <p class="ct">Business Development Intern</p>
+          <p class="cs">PT Alpha Academy Indonesia · Jan – Jun 2024 · Surabaya</p>
+          <p class="cb">Supported business development initiatives through market research, competitor analysis, and partnership coordination to grow the sales pipeline and client acquisition efforts.</p>
+        </div></div>
+      </div>
+
+      <p class="dvlbl" style="margin-top:2rem">Speaker Engagements</p>
+      <div class="spkr fi">
+        <p class="ct">Guest Speaker — "Marketing Moves: From Idea to Impact" <span class="bn">Latest</span></p>
+        <p class="cs">HIMANEDA · Universitas Darma Persada, Jakarta · April 16, 2026</p>
+        <p class="cb" style="margin-top:8px">Invited as a speaker in the capacity of CEO at PT Digital Nusantara Innovations (Upgrade MSME). Shared insights on data-driven marketing strategy and digital MSME development in the technology era.</p>
+      </div>
+      <div class="spkr fi">
+        <p class="ct">Guest Speaker — Cangkruk Bisnis (CANGKIS) 2024</p>
+        <p class="cs">HIMASIKA ITS · Physics Department ITS, Surabaya · November 2, 2024</p>
+        <p class="cb" style="margin-top:8px">Speaker 2 in the session "Entrepreneurship Opportunities for Gen Z" — sharing experiences of building a business from campus and creating an impactful startup for the younger generation.</p>
+      </div>
+
+      <p class="dvlbl" style="margin-top:2rem">Web Projects</p>
+      <div class="card-grid fi">
+        <div class="card">
+          <p class="ct">PANDU MAHARAJA</p>
+          <p class="cs">UPT Puskesmas Trajeng · Jun 2025</p>
+          <p class="cb">Integrated health screening and reservation platform for early detection and monitoring of non-communicable diseases at the primary healthcare level.</p>
+          <a href="https://pandumaharaja.online" class="pl" target="_blank">pandumaharaja.online ↗</a>
+        </div>
+        <div class="card">
+          <p class="ct">SI IMUT RUPA</p>
+          <p class="cs">UPT Puskesmas Trajeng · Aug 2024</p>
+          <p class="cb">Web-based immunization education application to improve community access to reliable health and immunization information.</p>
+          <a href="https://siimutrupa.com" class="pl" target="_blank">siimutrupa.com ↗</a>
+        </div>
+      </div>
+
+      <p class="dvlbl" style="margin-top:2rem">Research &amp; Publications</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:0.5rem">
+        <div class="paper fi">
+          <span class="tc tcb">Statistical Analysis &amp; Econometrics · 2024</span>
+          <p class="pt">Analisis Pengaruh Faktor pada Stunting di Jawa Timur Tahun 2021 Menggunakan Principal Component Analysis (PCA)</p>
+          <p class="pj">Mutiara: Multidisciplinary Scientific Journal</p>
+          <p class="pd">Applied multivariate statistical analysis (PCA) to identify dominant factors contributing to stunting at the provincial level.</p>
+          <a href="https://garuda.kemdiktisaintek.go.id/documents/detail/5403308" class="pl" target="_blank">View Paper ↗</a>
+        </div>
+        <div class="paper fi">
+          <span class="tc tcp">Time Series, Forecasting &amp; Financial Statistics · 2024</span>
+          <p class="pt">Peramalan Instrumen Sekuritas Menggunakan Analisis Kluster, ECM, dan Time Series Regression pada Indeks Saham IDXBUMN20</p>
+          <p class="pj">Action Research Literate (ARL)</p>
+          <p class="pd">Conducted time series regression, ECM, and clustering analysis for financial instrument forecasting.</p>
+          <a href="https://garuda.kemdiktisaintek.go.id/documents/detail/4602361" class="pl" target="_blank">View Paper ↗</a>
+        </div>
+        <div class="paper fi">
+          <span class="tc tct">Data Science, Text Analytics &amp; Machine Learning · 2025</span>
+          <p class="pt">Perbandingan Efektivitas Model Non-Negative Matrix Factorization (NMF) dan Top2Vec untuk Pemodelan Topik (Studi Kasus: Traveloka Hotel Reviews)</p>
+          <p class="pj">Kohesi: Jurnal Multidisiplin Saintek</p>
+          <p class="pd">Applied NLP and topic modeling using NMF and Top2Vec, evaluated with topic coherence (Cv).</p>
+          <a href="https://cibangsa.com/index.php/kohesi/article/view/4734" class="pl" target="_blank">View Paper ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORGANIZATIONAL EXPERIENCE TAB -->
+    <div id="tab-org" class="exp-panel" style="display:none">
+      <div class="timeline" style="margin-top:1.25rem">
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Head of Media &amp; External Relations — LKKI Al-Azhar ITS</p>
+          <p class="cs">Mar – Dec 2025 · Business Statistics Dept., ITS</p>
+          <p class="cb">Led media strategy and external relations for a departmental student organization. Managed content planning and stakeholder communication.</p>
+        </div></div>
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Vice Chairperson of External Affairs — OLFACTION (Olympiad of Statistic Action)</p>
+          <p class="cs">May – Dec 2024 · HIMADATA ITS</p>
+          <p class="cb">Coordinated partnerships and communications with schools, sponsors, and external stakeholders for a national-level statistics olympiad under HIMADATA ITS.</p>
+        </div></div>
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Staff, Ministry of Creative Economy — Student Executive Board (BEM ITS)</p>
+          <p class="cs">Oct 2023 – Oct 2024</p>
+          <p class="cb">Supported planning and execution of creative economy and entrepreneurship programs at the institute level, and coordinated across ministries for innovation-driven student activities.</p>
+        </div></div>
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Master of Ceremony — Various National Events</p>
+          <p class="cs">2023–2024 · ITS &amp; PT Jamkrindo</p>
+          <p class="cb">MC at ITS New Student Orientation, ITS Demo Day, ITS Launchpad Kick-Off, and PT Jamkrindo Culture Building Program, Makassar Region.</p>
+        </div></div>
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Expert Staff (Secretarial) — GERIGI ITS</p>
+          <p class="cs">Jul – Aug 2023 · ITS New Student Orientation</p>
+          <p class="cb">Coordinated secretarial operations across one regional area covering multiple units. Managed documentation flow, scheduling, and inter-unit communication.</p>
+        </div></div>
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Chairperson — Campus Expo SMAN 10 Bekasi</p>
+          <p class="cs">Dec 2022 – Jan 2023</p>
+          <p class="cb">Led end-to-end event planning and execution of an alumni-led education fair introducing higher education pathways to high school students.</p>
+        </div></div>
+        <div class="tli"><div class="tldg"></div><div style="flex:1">
+          <p class="ct">Student Ambassador — UKM EXPO ITS</p>
+          <p class="cs">Aug 2022</p>
+          <p class="cb">Represented the Business Statistics Department as the sole student ambassador. Acted as liaison between the department and the central organizing committee.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="impact">
+    <div class="sec-hdr fi"><div class="sec-acc a-teal"></div><span class="sec-lbl">Impact Highlights</span></div>
+    <h2 class="sec-ttl fi">Real impact delivered</h2>
+    <p class="sec-dsc fi">Concrete contributions born from active engagement and continuous self-development across multiple domains.</p>
+    <div class="card-grid fi">
+      <div class="ic ic1"><p class="ct">Impact for MSMEs &amp; Business</p><p class="cb">Led data-driven MSME digitalization — recognized with the CDE certification, helping small business owners access technology-based business insights.</p></div>
+      <div class="ic ic2"><p class="ct">Impact for Community Health</p><p class="cb">Two digital platforms for Puskesmas Trajeng improved accessibility of health screening services and immunization education for the community.</p></div>
+      <div class="ic ic3"><p class="ct">Impact for Research &amp; Data Ecosystem</p><p class="cb">Three scientific publications in national journals on stunting, capital markets, and recommendation systems — contributing evidence-based insights for researchers and policymakers.</p></div>
+      <div class="ic ic4"><p class="ct">Impact for Startup &amp; Entrepreneurship</p><p class="cb">Secured multiple national startup funding programs (ADB HETI, IYT, Rocket 5.0) and actively inspired Gen Z through two entrepreneurship speaker engagements.</p></div>
+    </div>
+  </div>
+
+  <div class="section" id="competencies">
+    <div class="sec-hdr fi"><div class="sec-acc a-purple"></div><span class="sec-lbl">Key Competencies Developed</span></div>
+    <h2 class="sec-ttl fi">Core competencies built</h2>
+    <p class="sec-dsc fi">Competencies that grew significantly through diverse real-world experiences.</p>
+    <div class="card-grid fi">
+      <div class="cc cc1"><p class="ct">Strategic Leadership</p><p class="cb">Led teams from the ground up — from ideation and execution to pitching investors and national &amp; international accelerator programs.</p></div>
+      <div class="cc cc2"><p class="ct">Data-Driven Problem Solving</p><p class="cb">Applied statistics, ML, and dashboard analytics to address real-world challenges across manufacturing, retail, healthcare, and finance.</p></div>
+      <div class="cc cc3"><p class="ct">Public Communication &amp; Representation</p><p class="cb">Experienced MC, guest speaker, and presenter at various national events; representing organizations in external forums and partnerships.</p></div>
+      <div class="cc cc4"><p class="ct">Cross-Sector Collaboration</p><p class="cb">Designed and executed programs alongside NGOs, public health centers, startups, and government ministries.</p></div>
+    </div>
+    <div style="margin-top:1.25rem" class="fi">
+      <p class="ct" style="margin-bottom:10px">Technical Skills</p>
+      <span class="tg">Python</span><span class="tg">SQL</span><span class="tg">IBM SPSS</span><span class="tg">Minitab</span><span class="tg">Streamlit</span><span class="tg">Google Sheets Advanced</span><span class="tg">Power BI</span><span class="tg">Excel</span><span class="tg">Canva</span><span class="tg">Adobe Illustrator</span><span class="tg">NLP</span><span class="tg">Topic Modeling</span><span class="tg">Time Series &amp; Forecasting</span><span class="tg">PCA</span><span class="tg">ECM</span><span class="tg">Dashboard Development</span>
+    </div>
+  </div>
+
+  <div class="section" id="commitment">
+    <div class="sec-hdr fi"><div class="sec-acc a-amber"></div><span class="sec-lbl">Contribution Commitment</span></div>
+    <h2 class="sec-ttl fi">Commitment going forward</h2>
+    <p class="sec-dsc fi">The direction of contribution I want to continue pursuing as a young leader.</p>
+    <div class="card-grid fi">
+      <div class="card"><p class="ct">Fields I want to pursue</p><p class="cb">Building the digital MSME ecosystem, applied data-driven research for public policy, and empowering young people through technology and social entrepreneurship.</p></div>
+      <div class="card"><p class="ct">Values I want to uphold</p><p class="cb">Integrity, cross-boundary collaboration, and measurable impact. I believe the best changes come from the combination of data, empathy, and authentic leadership.</p></div>
+      <div class="card"><p class="ct">Concrete commitment</p><p class="cb">Continuously building technology-based solutions that address real community needs, while actively sharing knowledge through mentoring and collaboration.</p></div>
+    </div>
+    <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center" class="fi">
+      <p style="font-size:12px;color:var(--text-tertiary)">© 2026 Dzakki Damar Rabbani · <a href="https://dzakjournal.com" style="color:var(--blue);text-decoration:none">dzakjournal.com</a></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('ai-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, nodes;
+  var colors = ['#2563eb','#7c3aed','#0d9488'];
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    nodes = [];
+    var count = Math.max(20, Math.floor((W * H) / 14000));
+    for (var i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2 + 1, pulse: Math.random() * Math.PI * 2,
+        col: colors[Math.floor(Math.random() * 3)]
+      });
+    }
+  }
+
+  function rgb(hex) {
+    return parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var blobData = [
+      {x:W*0.15,y:H*0.3,r:W*0.25,c:'rgba(37,99,235,0.06)'},
+      {x:W*0.8,y:H*0.2,r:W*0.2,c:'rgba(124,58,237,0.05)'},
+      {x:W*0.6,y:H*0.75,r:W*0.22,c:'rgba(13,148,136,0.05)'}
+    ];
+    for (var b = 0; b < blobData.length; b++) {
+      var bl = blobData[b];
+      var g = ctx.createRadialGradient(bl.x,bl.y,0,bl.x,bl.y,bl.r);
+      g.addColorStop(0, bl.c); g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bl.x,bl.y,bl.r,0,Math.PI*2); ctx.fill();
+    }
+    var maxD = Math.min(W,H)*0.22;
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      n.x += n.vx; n.y += n.vy; n.pulse += 0.02;
+      if (n.x<0||n.x>W) n.vx*=-1;
+      if (n.y<0||n.y>H) n.vy*=-1;
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      for (var j = i+1; j < nodes.length; j++) {
+        var dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        var d=Math.sqrt(dx*dx+dy*dy);
+        if (d<maxD) {
+          ctx.strokeStyle='rgba('+rgb(nodes[i].col)+','+(1-d/maxD)*0.18+')';
+          ctx.lineWidth=0.7; ctx.beginPath();
+          ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+        }
+      }
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      var n=nodes[i], p=Math.sin(n.pulse)*0.5+0.5;
+      ctx.fillStyle='rgba('+rgb(n.col)+','+(0.25+p*0.35)+')';
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r+p*0.8,0,Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+function switchTab(tab, btn) {
+  document.getElementById('tab-work').style.display = tab === 'work' ? 'block' : 'none';
+  document.getElementById('tab-org').style.display  = tab === 'org'  ? 'block' : 'none';
+  var btns = document.querySelectorAll('.exp-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  btn.classList.add('active');
+}
+
+function go(id) {
+  var el = document.getElementById(id);
+  if (el) {
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 68, behavior: 'smooth' });
+  }
+}
+
+window.addEventListener('scroll', function() {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.fi').forEach(function(el) { obs.observe(el); });
+</script>
+</body>
+</html>
